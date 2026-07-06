@@ -1,4 +1,5 @@
-# Deploys the game to GitHub Pages on every push to main.
+# Publishes the game to GitHub Pages on every push to main by syncing
+# main into the gh-pages branch (the branch Pages serves from).
 # Live site: https://agames21.github.io/Twilight-Princess-Web-remake/
 name: Deploy to GitHub Pages
 
@@ -8,38 +9,27 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
         with:
-          # Try to enable Pages automatically on first run; if this step
-          # fails with a permissions error, enable it once by hand:
-          # repo Settings -> Pages -> Source: "GitHub Actions", then re-run.
-          enablement: enabled
+          fetch-depth: 0
 
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # The site is the repo root (index.html, css/, js/, assets/)
-          path: .
-
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Sync main to gh-pages
+        run: |
+          # .nojekyll tells Pages to serve the files as-is (no Jekyll pass)
+          touch .nojekyll
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .nojekyll
+          git commit -m "Publish ${GITHUB_SHA::7} to gh-pages" || true
+          git push --force origin HEAD:gh-pages
