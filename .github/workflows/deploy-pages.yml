@@ -1,0 +1,45 @@
+# Deploys the game to GitHub Pages on every push to main.
+# Live site: https://agames21.github.io/Twilight-Princess-Web-remake/
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          # Try to enable Pages automatically on first run; if this step
+          # fails with a permissions error, enable it once by hand:
+          # repo Settings -> Pages -> Source: "GitHub Actions", then re-run.
+          enablement: enabled
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # The site is the repo root (index.html, css/, js/, assets/)
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
