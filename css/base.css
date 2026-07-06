@@ -1,0 +1,137 @@
+/* ============================================================
+   Twilight Wolf — base.css
+   Reset, theme tokens, typography, responsive foundations
+   ============================================================ */
+
+:root {
+  /* --- Twilight palette --- */
+  --c-night:        #0d0817;  /* deepest purple-black */
+  --c-dusk:         #1b1230;  /* upper sky */
+  --c-horizon:      #2d1f4e;  /* lower sky, behind ruins */
+  --c-teal-deep:    #12403f;
+  --c-teal:         #2f8f85;
+  --c-teal-glow:    #6fe3cf;  /* rune / cursor glow */
+  --c-purple:       #6b4fa3;
+  --c-purple-soft:  #9a7fd1;
+  --c-torch:        #ffb45e;
+  --c-torch-core:   #ffe3b0;
+  --c-text:         #e9e3f4;
+  --c-text-dim:     #a79fc0;
+  --c-danger:       #d8626b;
+
+  /* --- Type --- */
+  --font-display: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-body: Georgia, "Times New Roman", serif;
+
+  /* --- Motion --- */
+  --dur-screen-fade: 450ms;
+  --dur-cursor-slide: 220ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden; /* single-page, no scroll */
+}
+
+body {
+  background: var(--c-night);
+  color: var(--c-text);
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* no double-tap zoom on menus */
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  cursor: pointer;
+}
+
+/* App layer sits above the ambient background */
+#app {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  /* keep UI clear of notches / rounded corners */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* ------------------------------------------------------------
+   Screen lifecycle (driven by TW.ScreenManager)
+   .screen            hidden, non-interactive
+   .screen--active    visible, interactive
+   .screen--exit      fading out (still visible)
+   ------------------------------------------------------------ */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--dur-screen-fade) ease,
+              visibility 0s linear var(--dur-screen-fade);
+}
+
+.screen--active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity var(--dur-screen-fade) ease;
+}
+
+.screen--exit {
+  opacity: 0;
+}
+
+/* Keyboard focus: rely on the rune cursor / glow states instead of the
+   default ring, but keep a visible ring for :focus-visible (a11y). */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid var(--c-teal-glow);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Show/hide desktop vs. touch hints */
+.hint--mobile,
+.press-start__mobile { display: none; }
+
+@media (pointer: coarse) {
+  .hint--desktop,
+  .press-start__desktop { display: none; }
+  .hint--mobile,
+  .press-start__mobile { display: inline; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

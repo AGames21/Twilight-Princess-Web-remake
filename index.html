@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Twilight Wolf — an original fantasy action-adventure. Phase 1: title menu.">
+  <title>Twilight Wolf</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/ambient.css">
+  <link rel="stylesheet" href="css/screens.css">
+</head>
+<body>
+
+  <!-- ================================================================
+       AMBIENT BACKGROUND — always-on looping layers behind every screen
+       (parallax ruins silhouettes, canvas fog, torch glow, vignette)
+       ================================================================ -->
+  <div id="ambient" aria-hidden="true">
+    <div class="amb-sky"></div>
+
+    <!-- Parallax silhouettes. Inline SVGs are placeholders — swap each
+         layer's background for the matching image in MEDIA_MANIFEST.md
+         (bg_ruins_far / bg_ruins_mid / bg_ruins_near). -->
+    <div class="amb-layer amb-layer--far" data-parallax="6">
+      <svg class="amb-silhouette" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMax slice">
+        <path fill="currentColor" d="M0,400 L0,300 L120,260 L180,290 L260,210 L270,150 L282,148 L290,210 L360,270 L470,240 L560,285 L640,230 L700,255 L760,180 L768,120 L782,118 L792,182 L850,250 L980,225 L1090,280 L1180,235 L1260,265 L1330,190 L1338,140 L1352,138 L1362,195 L1430,260 L1520,240 L1600,290 L1600,400 Z"/>
+      </svg>
+    </div>
+    <div class="amb-layer amb-layer--mid" data-parallax="14">
+      <svg class="amb-silhouette" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMax slice">
+        <path fill="currentColor" d="M0,400 L0,330 L60,325 L70,220 L84,215 L96,222 L104,328 L200,320 L210,250 L226,244 L242,252 L250,318 L340,325 L420,310 L430,180 L444,150 L458,178 L470,305 L560,318 L640,308 L700,315 L710,240 L722,200 L730,196 L740,238 L752,312 L860,320 L960,305 L972,170 L988,135 L1002,168 L1014,300 L1120,315 L1200,308 L1210,255 L1226,248 L1240,258 L1248,312 L1360,320 L1440,300 L1450,210 L1462,205 L1476,212 L1484,305 L1600,325 L1600,400 Z"/>
+      </svg>
+    </div>
+    <div class="amb-layer amb-layer--near" data-parallax="26">
+      <svg class="amb-silhouette" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMax slice">
+        <path fill="currentColor" d="M0,400 L0,140 L26,132 L54,146 L60,400 M120,400 L128,240 L110,236 L134,180 L120,176 L150,120 L178,178 L164,182 L190,238 L172,242 L182,400 M1420,400 L1428,230 L1410,226 L1436,168 L1422,164 L1452,104 L1482,166 L1468,170 L1494,228 L1476,232 L1486,400 M1540,400 L1544,150 L1572,136 L1600,148 L1600,400 Z"/>
+      </svg>
+    </div>
+
+    <!-- Drifting fog particles (canvas, driven by js/effects/ambient.js) -->
+    <canvas id="fog-canvas"></canvas>
+
+    <!-- Torch glows flanking the menu — flicker via CSS keyframes -->
+    <div class="amb-torch amb-torch--left"></div>
+    <div class="amb-torch amb-torch--right"></div>
+
+    <div class="amb-vignette"></div>
+  </div>
+
+  <!-- ================================================================
+       SCREENS — one <section> per screen, managed by TW.ScreenManager.
+       Phase 2+: add a new <section class="screen">, a matching screen
+       module in js/screens/, and register it in js/main.js.
+       ================================================================ -->
+  <main id="app">
+
+    <!-- INTRO / TITLE SPLASH -->
+    <section class="screen" id="screen-intro" data-screen="intro">
+      <div class="intro-inner">
+        <div class="logo-slot">
+          <!-- Placeholder emblem + wordmark. Swap for
+               assets/images/logo/logo_twilight_wolf.png when art is ready. -->
+          <svg class="logo-emblem" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="2" opacity="0.55"/>
+            <circle cx="60" cy="60" r="44" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+            <!-- wolf eye -->
+            <path d="M22,60 Q60,30 98,60 Q60,90 22,60 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <ellipse cx="60" cy="60" rx="7" ry="16" fill="currentColor"/>
+            <!-- rune ticks around the ring -->
+            <g stroke="currentColor" stroke-width="2" opacity="0.7">
+              <line x1="60" y1="4"  x2="60" y2="16"/>
+              <line x1="60" y1="104" x2="60" y2="116"/>
+              <line x1="4"  y1="60" x2="16" y2="60"/>
+              <line x1="104" y1="60" x2="116" y2="60"/>
+            </g>
+          </svg>
+          <h1 class="logo-wordmark">Twilight <span>Wolf</span></h1>
+          <p class="logo-tagline">The dusk remembers</p>
+        </div>
+        <button class="press-start" id="press-start" type="button">
+          <span class="press-start__desktop">Press Start</span>
+          <span class="press-start__mobile">Tap to Begin</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- MAIN MENU -->
+    <section class="screen" id="screen-menu" data-screen="menu">
+      <header class="menu-header">
+        <h1 class="menu-title">Twilight <span>Wolf</span></h1>
+      </header>
+      <nav class="menu-nav">
+        <ul class="menu-list" id="menu-list">
+          <li><button class="menu-item" type="button" data-action="newgame">New Game</button></li>
+          <li><button class="menu-item" type="button" data-action="continue">Continue</button></li>
+          <li><button class="menu-item" type="button" data-action="settings">Settings</button></li>
+          <li><button class="menu-item" type="button" data-action="quit">Quit</button></li>
+        </ul>
+        <!-- Glowing wolf-eye cursor; slides beside the selected option -->
+        <div class="menu-cursor" id="menu-cursor" aria-hidden="true">
+          <svg viewBox="0 0 48 32">
+            <path d="M4,16 Q24,2 44,16 Q24,30 4,16 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <ellipse cx="24" cy="16" rx="3.5" ry="9" fill="currentColor"/>
+          </svg>
+        </div>
+      </nav>
+      <footer class="menu-footer">
+        <p class="hint hint--desktop">&#8593;&#8595; Navigate &nbsp;&middot;&nbsp; Enter Select &nbsp;&middot;&nbsp; Esc Back</p>
+        <p class="hint hint--mobile">Tap an option to select it</p>
+      </footer>
+    </section>
+
+    <!-- SETTINGS (shell — sliders wired to audio, other rows placeholders) -->
+    <section class="screen" id="screen-settings" data-screen="settings">
+      <div class="panel">
+        <h2 class="panel-title">Settings</h2>
+
+        <div class="settings-group">
+          <h3 class="settings-heading">Audio</h3>
+          <label class="settings-row" for="vol-master">
+            <span class="settings-label">Master Volume</span>
+            <input type="range" id="vol-master" min="0" max="100" value="80" data-volume="master">
+          </label>
+          <label class="settings-row" for="vol-music">
+            <span class="settings-label">Music Volume</span>
+            <input type="range" id="vol-music" min="0" max="100" value="70" data-volume="music">
+          </label>
+          <label class="settings-row" for="vol-sfx">
+            <span class="settings-label">SFX Volume</span>
+            <input type="range" id="vol-sfx" min="0" max="100" value="80" data-volume="sfx">
+          </label>
+        </div>
+
+        <div class="settings-group">
+          <h3 class="settings-heading">Gameplay <span class="badge-soon">coming soon</span></h3>
+          <div class="settings-row settings-row--disabled">
+            <span class="settings-label">Screen Shake</span>
+            <span class="settings-value">On</span>
+          </div>
+          <div class="settings-row settings-row--disabled">
+            <span class="settings-label">Text Speed</span>
+            <span class="settings-value">Normal</span>
+          </div>
+          <div class="settings-row settings-row--disabled">
+            <span class="settings-label">Language</span>
+            <span class="settings-value">English</span>
+          </div>
+        </div>
+
+        <button class="btn-back" id="settings-back" type="button">&#10094; Back</button>
+      </div>
+    </section>
+
+    <!-- QUIT -->
+    <section class="screen" id="screen-quit" data-screen="quit">
+      <div class="quit-inner">
+        <p class="quit-line">The forest sleeps&hellip;</p>
+        <p class="quit-sub">You may close this tab.</p>
+        <button class="btn-back" id="quit-return" type="button">Return to Title</button>
+      </div>
+    </section>
+
+    <!-- GAME (Phase 2 stub — see js/screens/game.js for the handoff notes) -->
+    <section class="screen" id="screen-game" data-screen="game">
+      <div class="game-stub">
+        <p class="game-stub__mode" id="game-mode-label">Prologue</p>
+        <h2 class="game-stub__title">The Cursed Wood Awaits</h2>
+        <p class="game-stub__body">This is where the tutorial / intro gameplay scene begins in Phase&nbsp;2.</p>
+        <button class="btn-back" id="game-back" type="button">Return to Title</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Vendored libs -->
+  <script src="js/vendor/howler.min.js"></script>
+
+  <!-- App modules (load order matters: config → core → effects → screens → boot) -->
+  <script src="js/config.js"></script>
+  <script src="js/core/save.js"></script>
+  <script src="js/core/audio.js"></script>
+  <script src="js/core/input.js"></script>
+  <script src="js/core/screens.js"></script>
+  <script src="js/effects/ambient.js"></script>
+  <script src="js/screens/intro.js"></script>
+  <script src="js/screens/menu.js"></script>
+  <script src="js/screens/settings.js"></script>
+  <script src="js/screens/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+/* ============================================================
+   Twilight Wolf — ambient.css
+   Looping background: dusk sky, parallax ruins, fog canvas,
+   torch flicker, vignette. Everything here is decorative.
+   ============================================================ */
+
+#ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--c-night);
+}
+
+/* --- Sky gradient: night above, teal/purple dusk at the horizon --- */
+.amb-sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 65% at 50% 100%,
+      rgba(47, 143, 133, 0.28) 0%,
+      rgba(107, 79, 163, 0.22) 38%,
+      rgba(27, 18, 48, 0) 72%),
+    linear-gradient(to bottom,
+      var(--c-night) 0%,
+      var(--c-dusk) 45%,
+      var(--c-horizon) 100%);
+}
+
+/* --- Parallax silhouette layers ---------------------------------
+   Placeholder inline SVGs tinted per depth. When real art exists,
+   set a background-image on the layer and hide the inline SVG.
+   data-parallax on each layer = max pointer-shift in px (see
+   js/effects/ambient.js). The slow drift below runs regardless. */
+.amb-layer {
+  position: absolute;
+  left: -4%;
+  right: -4%;   /* bleed so parallax shift never shows edges */
+  bottom: 0;
+  will-change: transform;
+}
+
+.amb-silhouette {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.amb-layer--far {
+  height: 42%;
+  color: #241a42;
+  opacity: 0.9;
+  animation: amb-drift 90s ease-in-out infinite alternate;
+}
+
+.amb-layer--mid {
+  height: 34%;
+  color: #171034;
+  animation: amb-drift 60s ease-in-out infinite alternate-reverse;
+}
+
+.amb-layer--near {
+  height: 30%;
+  color: #0a0614;
+  animation: amb-drift 45s ease-in-out infinite alternate;
+}
+
+/* --plx is the pointer-parallax offset set by js/effects/ambient.js;
+   folding it into the keyframes lets drift + parallax combine on the
+   same transform. */
+@keyframes amb-drift {
+  from { transform: translateX(calc(-0.6% + var(--plx, 0px))); }
+  to   { transform: translateX(calc(0.6% + var(--plx, 0px))); }
+}
+
+/* --- Fog canvas (particles drawn by TW.Ambient) --- */
+#fog-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Torch glows: warm pulses low on each side of the frame --- */
+.amb-torch {
+  position: absolute;
+  bottom: 6%;
+  width: clamp(160px, 24vw, 340px);
+  height: clamp(160px, 24vw, 340px);
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 227, 176, 0.32) 0%,
+    rgba(255, 180, 94, 0.16) 35%,
+    rgba(255, 180, 94, 0) 70%);
+  filter: blur(2px);
+  animation: torch-flicker 3.4s ease-in-out infinite;
+}
+
+.amb-torch--left  { left: -4%; }
+.amb-torch--right { right: -4%; animation-delay: -1.7s; animation-duration: 2.9s; }
+
+@keyframes torch-flicker {
+  0%   { opacity: 0.75; transform: scale(1); }
+  18%  { opacity: 0.95; transform: scale(1.05); }
+  33%  { opacity: 0.68; transform: scale(0.97); }
+  52%  { opacity: 1;    transform: scale(1.08); }
+  71%  { opacity: 0.8;  transform: scale(1.01); }
+  86%  { opacity: 0.92; transform: scale(1.04); }
+  100% { opacity: 0.75; transform: scale(1); }
+}
+
+/* --- Vignette to pull focus to the center --- */
+.amb-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 45%,
+    rgba(13, 8, 23, 0) 55%,
+    rgba(13, 8, 23, 0.55) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .amb-layer,
+  .amb-torch {
+    animation: none;
+  }
+  .amb-torch {
+    opacity: 0.8;
+  }
+}
