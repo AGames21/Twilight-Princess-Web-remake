@@ -1,5 +1,16 @@
 # Twilight Wolf (working title)
 
+## ▶️ Play it now
+
+**https://agames21.github.io/Twilight-Princess-Web-remake/**
+
+Works on any phone, tablet, or computer — nothing to install. On iPhone,
+open it in Safari and tap **Share → Add to Home Screen** to launch it
+fullscreen like an app. The site republishes automatically a minute or
+two after anything is merged to `main`.
+
+---
+
 An original fantasy action-adventure for the web. **Phase 1** ships the
 front-of-house only: an animated title splash and main menu with a full
 audio scaffold — no gameplay yet.
